@@ -8,6 +8,8 @@ public class PlayerControls : MonoBehaviour
     public Transform gameCamera;
     public float cameraFollowSpeed = 5f;
 
+    public float cameraOffset;
+
     private Input input;
     private Rigidbody2D rigidBody;
     private bool onGround;
@@ -16,6 +18,7 @@ public class PlayerControls : MonoBehaviour
     {
         input = new Input();
         rigidBody = GetComponent<Rigidbody2D>();
+        cameraOffset += transform.position.y;
     }
 
     void Update()
@@ -38,6 +41,13 @@ public class PlayerControls : MonoBehaviour
             gameCamera.position.y,
             gameCamera.position.z
         );
+
+        if(transform.position.y+cameraOffset < gameCamera.position.y)
+        {
+            targetPosition = new(transform.position.x,
+                                transform.position.y,
+                                gameCamera.position.z);
+        }
 
         gameCamera.position = Vector3.Lerp(
             gameCamera.position,
