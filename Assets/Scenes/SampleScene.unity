@@ -7621,6 +7621,8 @@ MonoBehaviour:
   moveSpeed: 7
   gameCamera: {fileID: 519420032}
   cameraFollowSpeed: 5
+  clonePrefab: {fileID: 1312916363753097493, guid: 1b790e8448ec33a408792649040ea1af, type: 3}
+  recordTime: 5
   cameraOffset: 0
 --- !u!4 &1271195857 stripped
 Transform:

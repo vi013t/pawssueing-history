@@ -1,4 +1,6 @@
 using UnityEngine;
+using System.Collections.Generic;
+using System.Linq;
 
 public class PlayerControls : MonoBehaviour
 {
@@ -7,12 +9,18 @@ public class PlayerControls : MonoBehaviour
     public float moveSpeed = 7f;
     public Transform gameCamera;
     public float cameraFollowSpeed = 5f;
+    public Clone clonePrefab;
+    public float recordTime = 5f;
 
     public float cameraOffset;
 
     private Input input;
     private Rigidbody2D rigidBody;
     private bool onGround;
+
+    private Queue<Vector2> recordedPositions = new();
+    private float recordingTime = 0f;
+    private Vector2 recordingPosition;
 
     void Awake()
     {
@@ -32,6 +40,48 @@ public class PlayerControls : MonoBehaviour
             rigidBody.AddForce(Vector3.up * jumpForce, ForceMode2D.Impulse);
             onGround = false;
         }
+
+        if (input.Player.Record.triggered && recordingTime == 0)
+        {
+            Debug.Log("recording uwu");
+            recordingTime = recordTime;
+            recordingPosition = new Vector2(transform.position.x, transform.position.y);
+        }
+    }
+
+    void FixedUpdate()
+    {
+        if (recordingTime > 0) {
+            var current = new Vector2(transform.position.x, transform.position.y);
+            recordedPositions.Enqueue(current);
+
+            recordingTime = Mathf.Max(recordingTime - Time.fixedDeltaTime, 0);
+
+            if (recordingTime == 0)
+            {
+                Debug.Log("done recording owo");
+                SpawnClone();
+            }
+        }
+    }
+
+    private void SpawnClone()
+    {
+        var clone = Instantiate(clonePrefab);
+        clone.transform.position = recordingPosition;
+
+        var deltas = new Queue<Vector2>(); 
+        Vector2? previous = null;
+        foreach(var currentPosition in recordedPositions)
+        {
+            var previousPosition = previous ?? recordingPosition;
+            var deltaMovement = currentPosition - previousPosition;
+            deltas.Enqueue(deltaMovement);
+            previous = currentPosition;
+        }
+
+        clone.movements = new Queue<Vector2>(deltas);
+        recordedPositions = new();
     }
 
     void LateUpdate()
