@@ -4,6 +4,10 @@ using System.Linq;
 
 public class PlayerControls : MonoBehaviour
 {
+    private Animator animator;
+
+    private SpriteRenderer spriteRenderer;
+
 
     public float jumpForce = 10f;
     public float moveSpeed = 7f;
@@ -27,6 +31,8 @@ public class PlayerControls : MonoBehaviour
         input = new Input();
         rigidBody = GetComponent<Rigidbody2D>();
         cameraOffset += transform.position.y;
+        animator = GetComponent<Animator>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
     void Update()
@@ -34,6 +40,20 @@ public class PlayerControls : MonoBehaviour
         Vector2 moveInput = input.Player.Move.ReadValue<Vector2>();
         Vector3 movement = new(moveInput.x, 0, 0);
         transform.Translate(moveSpeed * Time.deltaTime * movement);
+        //Me animation stuff
+        bool isWalking = moveInput.x != 0;
+        animator.SetBool("isWalking", isWalking);
+
+        
+        if (moveInput.x > 0)
+        {
+            spriteRenderer.flipX = true;
+        }
+        else if (moveInput.x < 0)
+        {
+            spriteRenderer.flipX = false;
+        }
+
 
         if (input.Player.Jump.triggered && onGround)
         {
