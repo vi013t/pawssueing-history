@@ -1,30 +1,44 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 public class PlayerControls : MonoBehaviour
 {
-    private Animator animator;
 
-    private SpriteRenderer spriteRenderer;
-
-
+    [Header("Movement")]
     public float jumpForce = 10f;
+    public float dashForce = 10f;
     public float moveSpeed = 7f;
+    public float maxStamina = 100f;
+    public float dashStaminaCost = 30f;
+    public float jumpStaminaCost = 10f;
+    public float passiveStaminaRegeneration = 5f;
+    public float sprintStaminaDepletion = 5f;
+    public float sprintMultiplier = 1.4f;
+
+    [Header("Camera")]
     public Transform gameCamera;
     public float cameraFollowSpeed = 5f;
+    public float cameraOffset = 0;
+
+    [Header("Cloning")]
     public Clone clonePrefab;
     public float recordTime = 5f;
 
-    public float cameraOffset;
+    private Animator animator;
+    private SpriteRenderer spriteRenderer;
 
     private Input input;
     private Rigidbody2D rigidBody;
-    private bool onGround;
 
     private Queue<Vector2> recordedPositions = new();
     private float recordingTime = 0f;
     private Vector2 recordingPosition;
+
+    private bool onGround;
+    private bool isSprinting = false;
+    private float stamina; 
 
     void Awake()
     {
@@ -33,55 +47,122 @@ public class PlayerControls : MonoBehaviour
         cameraOffset += transform.position.y;
         animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
+        stamina = maxStamina;
     }
 
     void Update()
     {
-        Vector2 moveInput = input.Player.Move.ReadValue<Vector2>();
-        Vector3 movement = new(moveInput.x, 0, 0);
-        transform.Translate(moveSpeed * Time.deltaTime * movement);
-        //Me animation stuff
-        bool isWalking = moveInput.x != 0;
-        animator.SetBool("isWalking", isWalking);
-
-        
-        if (moveInput.x > 0)
-        {
-            spriteRenderer.flipX = true;
-        }
-        else if (moveInput.x < 0)
-        {
-            spriteRenderer.flipX = false;
-        }
-
-
-        if (input.Player.Jump.triggered && onGround)
-        {
-            rigidBody.AddForce(Vector3.up * jumpForce, ForceMode2D.Impulse);
-            onGround = false;
-        }
-
-        if (input.Player.Record.triggered && recordingTime == 0)
-        {
-            Debug.Log("recording uwu");
-            recordingTime = recordTime;
-            recordingPosition = new Vector2(transform.position.x, transform.position.y);
-        }
+        Move(Time.deltaTime);
+        AnimateMovement();
+        CheckForRecordingStart();
     }
 
     void FixedUpdate()
+    {
+        CheckForRecordingEnd(Time.fixedDeltaTime);
+    }
+
+    void LateUpdate()
+    {
+        CameraFollowPlayer();
+    }
+
+    void CameraFollowPlayer()
+    {
+        Vector3 targetPosition = new(
+            transform.position.x,
+            gameCamera.position.y,
+            gameCamera.position.z
+        );
+
+        if (transform.position.y + cameraOffset < gameCamera.position.y)
+        {
+            targetPosition = new(
+                transform.position.x,
+                transform.position.y,
+                gameCamera.position.z
+            );
+        }
+
+        gameCamera.position = Vector3.Lerp(
+            gameCamera.position,
+            targetPosition,
+            cameraFollowSpeed * Time.deltaTime
+        );
+    }
+
+    void CheckForRecordingEnd(float deltaTime)
     {
         if (recordingTime > 0) {
             var current = new Vector2(transform.position.x, transform.position.y);
             recordedPositions.Enqueue(current);
 
-            recordingTime = Mathf.Max(recordingTime - Time.fixedDeltaTime, 0);
+            recordingTime = Mathf.Max(recordingTime - deltaTime, 0);
 
             if (recordingTime == 0)
             {
                 Debug.Log("done recording owo");
                 SpawnClone();
             }
+        }
+    }
+
+    void CheckForRecordingStart()
+    {
+        if (input.Player.Record.triggered && recordingTime == 0)
+        {
+            Debug.Log("recording uwu");
+            recordingTime = recordTime;
+            recordingPosition = new(transform.position.x, transform.position.y);
+        }
+    }
+
+    void CheckForJump()
+    {
+        if (input.Player.Jump.triggered && onGround && stamina >= jumpStaminaCost)
+        {
+            rigidBody.AddForce(Vector3.up * jumpForce, ForceMode2D.Impulse);
+            onGround = false;
+            stamina -= jumpStaminaCost;
+        }
+    }
+
+    void AnimateMovement()
+    {
+        Vector2 moveInput = input.Player.Move.ReadValue<Vector2>();
+        bool isWalking = moveInput.x != 0;
+        animator.SetBool("isWalking", isWalking);
+        if (isWalking) spriteRenderer.flipX = moveInput.x > 0;
+    }
+
+    void Move(float deltaTime)
+    {
+        Vector2 moveInput = input.Player.Move.ReadValue<Vector2>();
+        Vector3 movement = new(moveInput.x, 0, 0);
+
+        if (input.Player.Sprint.triggered) isSprinting = !isSprinting;
+        var sprinting = isSprinting && stamina > sprintStaminaDepletion;
+
+        var speed = moveSpeed * (isSprinting ? sprintMultiplier : 1);
+
+        transform.Translate(speed * deltaTime * movement);
+
+        var previousStamina = stamina;
+        if (isSprinting) stamina -= sprintStaminaDepletion * deltaTime;
+
+        CheckForJump();
+        CheckForDash();
+
+        if (stamina == previousStamina) stamina += passiveStaminaRegeneration * deltaTime;
+    }
+
+    void CheckForDash()
+    {
+        if (input.Player.Dash.triggered && stamina >= dashStaminaCost)
+        {
+            var direction = spriteRenderer.flipX ? Vector3.right : Vector3.left;
+            rigidBody.AddForce(direction * dashForce, ForceMode2D.Impulse);
+            stamina -= dashStaminaCost;
         }
     }
 
@@ -102,28 +183,6 @@ public class PlayerControls : MonoBehaviour
 
         clone.movements = new Queue<Vector2>(deltas);
         recordedPositions = new();
-    }
-
-    void LateUpdate()
-    {
-        Vector3 targetPosition = new(
-            transform.position.x,
-            gameCamera.position.y,
-            gameCamera.position.z
-        );
-
-        if(transform.position.y+cameraOffset < gameCamera.position.y)
-        {
-            targetPosition = new(transform.position.x,
-                                transform.position.y,
-                                gameCamera.position.z);
-        }
-
-        gameCamera.position = Vector3.Lerp(
-            gameCamera.position,
-            targetPosition,
-            cameraFollowSpeed * Time.deltaTime
-        );
     }
 
     private void OnEnable()

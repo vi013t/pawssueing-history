@@ -17720,8 +17720,8 @@ GameObject:
   - component: {fileID: 1238814232}
   - component: {fileID: 1238814231}
   - component: {fileID: 1238814234}
-  - component: {fileID: 1238814235}
   - component: {fileID: 1238814236}
+  - component: {fileID: 1238814235}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -17889,12 +17889,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerControls
   jumpForce: 10
+  dashForce: 10
   moveSpeed: 7
+  maxStamina: 100
+  dashStaminaCost: 30
+  jumpStaminaCost: 10
+  passiveStaminaRegeneration: 5
+  sprintStaminaDepletion: 5
+  sprintMultiplier: 1.4
   gameCamera: {fileID: 519420032}
   cameraFollowSpeed: 5
+  cameraOffset: 0
   clonePrefab: {fileID: 1312916363753097493, guid: 1b790e8448ec33a408792649040ea1af, type: 3}
   recordTime: 5
-  cameraOffset: 0
 --- !u!95 &1238814236
 Animator:
   serializedVersion: 7
