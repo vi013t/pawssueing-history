@@ -16,6 +16,7 @@ public class PlayerControls : MonoBehaviour
     public float passiveStaminaRegeneration = 5f;
     public float sprintStaminaDepletion = 5f;
     public float sprintMultiplier = 1.4f;
+    public float staminaRegenerationDelay = 3f;
 
     [Header("Camera")]
     public Transform gameCamera;
@@ -39,6 +40,7 @@ public class PlayerControls : MonoBehaviour
     private bool onGround;
     private bool isSprinting = false;
     private float stamina; 
+    private float timeSinceUsedStamina;
 
     void Awake()
     {
@@ -48,6 +50,7 @@ public class PlayerControls : MonoBehaviour
         animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         stamina = maxStamina;
+        timeSinceUsedStamina = staminaRegenerationDelay;
     }
 
     void Update()
@@ -144,7 +147,6 @@ public class PlayerControls : MonoBehaviour
         var sprinting = isSprinting && stamina > sprintStaminaDepletion;
 
         var speed = moveSpeed * (isSprinting ? sprintMultiplier : 1);
-
         transform.Translate(speed * deltaTime * movement);
 
         var previousStamina = stamina;
@@ -153,7 +155,10 @@ public class PlayerControls : MonoBehaviour
         CheckForJump();
         CheckForDash();
 
-        if (stamina == previousStamina) stamina += passiveStaminaRegeneration * deltaTime;
+        if (stamina == previousStamina) {
+            if (timeSinceUsedStamina < staminaRegenerationDelay) timeSinceUsedStamina += deltaTime;
+            else stamina += passiveStaminaRegeneration * deltaTime;
+        }
     }
 
     void CheckForDash()
