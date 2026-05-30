@@ -23,5 +23,9 @@ public class OutOfBoundsScript : MonoBehaviour
         {
             collision.gameObject.transform.position = spawnPosition;
         }
+        if (collision.TryGetComponent(out Damageable hit))
+        {
+            hit.Damage(1);
+        }
     }
 }

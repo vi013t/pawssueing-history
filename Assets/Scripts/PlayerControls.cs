@@ -1,7 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
+using NUnit.Framework;
 
 public class PlayerControls : MonoBehaviour
 {
@@ -78,7 +77,7 @@ public class PlayerControls : MonoBehaviour
             gameCamera.position.z
         );
 
-        if (transform.position.y + cameraOffset < gameCamera.position.y)
+        if (transform.position.y + cameraOffset != gameCamera.position.y)
         {
             targetPosition = new(
                 transform.position.x,
@@ -202,7 +201,7 @@ public class PlayerControls : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.CompareTag("Ground"))
+        if (collision.gameObject.CompareTag("Ground") || collision.gameObject.CompareTag("Clone"))
         {
             onGround = true;
         }
