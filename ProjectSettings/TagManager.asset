@@ -43,6 +43,27 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Cloud
+    uniqueID: 894079373
+    locked: 0
+  - name: Volcano
+    uniqueID: 4244117929
+    locked: 0
+  - name: Moutain
+    uniqueID: 885066113
+    locked: 0
+  - name: Tree
+    uniqueID: 568989507
+    locked: 0
+  - name: Grass
+    uniqueID: 3861671281
+    locked: 0
+  - name: Tile
+    uniqueID: 2791130945
+    locked: 0
+  - name: Player
+    uniqueID: 1356240717
+    locked: 0
   m_RenderingLayers:
   - Default
   m_MigratedRenderPipelines: []
