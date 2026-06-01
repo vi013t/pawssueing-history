@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System.Threading.Tasks.Dataflow;
 
 public class GroundedEnemy : MonoBehaviour
 {
@@ -25,6 +26,7 @@ public class GroundedEnemy : MonoBehaviour
 	private State state = State.Idle;
 	private Vector3 startingPosition;
 	private HorizontalDirection patrollingDirection;
+	private bool onGround = false;
 
 	void Start()
 	{
@@ -55,6 +57,14 @@ public class GroundedEnemy : MonoBehaviour
 
 			Patrol(Time.deltaTime);
 			return;
+		}
+	}
+
+	void CheckForFall()
+	{
+		if (onGround && (transform.position.y - startingPosition.y).magnitude < distanceEpsilon)
+		{
+			startingPosition = transform.position;
 		}
 	}
 
@@ -95,21 +105,31 @@ public class GroundedEnemy : MonoBehaviour
 		}
 	}
 
-	bool CanSeePlayer()
+	bool CanSeePlayer
 	{
-		Vector2 direction = patrollingDirection == HorizontalDirection.Left ? new(-1, 0) : new(1, 0);
-		float distance = (transform.position - player.transform.position).magnitude;
+		get {
+			Vector2 direction = patrollingDirection == HorizontalDirection.Left ? new(-1, 0) : new(1, 0);
+			float distance = (transform.position - player.transform.position).magnitude;
 
-		if (distance > visionRadius) return false;
+			if (distance > visionRadius) return false;
 
-		direction.Normalize();
-		if (Physics.Raycast(transform.position, direction, out RaycastHit hit, visionRadius))
-		{
-			return hit.transform == player;
+			direction.Normalize();
+			if (Physics.Raycast(transform.position, direction, out RaycastHit hit, visionRadius))
+			{
+				return hit.transform == player;
+			}
+
+			return false;
 		}
-
-		return false;
 	}
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Ground") || collision.gameObject.CompareTag("Clone"))
+        {
+            onGround = true;
+        }
+    }
 
 	public enum State
 	{
