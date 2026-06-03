@@ -1,6 +1,5 @@
 using UnityEngine;
 using System.Collections.Generic;
-using System.Threading.Tasks.Dataflow;
 
 public class GroundedEnemy : MonoBehaviour
 {
@@ -42,7 +41,7 @@ public class GroundedEnemy : MonoBehaviour
 			return;
 		}
 
-		if ((state == State.Idle || state == State.Returning) && CanSeePlayer())
+		if ((state == State.Idle || state == State.Returning) && CanSeePlayer)
 		{
 			ChargeAtPlayer(Time.deltaTime);
 			return;
@@ -62,7 +61,7 @@ public class GroundedEnemy : MonoBehaviour
 
 	void CheckForFall()
 	{
-		if (onGround && (transform.position.y - startingPosition.y).magnitude < distanceEpsilon)
+		if (onGround && (transform.position.y - startingPosition.y) < distanceEpsilon)
 		{
 			startingPosition = transform.position;
 		}

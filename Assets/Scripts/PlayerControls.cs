@@ -1,10 +1,12 @@
 using UnityEngine;
 using System.Collections.Generic;
 using NUnit.Framework;
+using Unity.VectorGraphics;
+using UnityEngine.SceneManagement;
 
-public class PlayerControls : MonoBehaviour
+public class PlayerControls : MonoBehaviour, Damageable
 {
-
+    public int maxHealth;
     [Header("Movement")]
     public float jumpForce = 10f;
     public float dashForce = 10f;
@@ -40,6 +42,7 @@ public class PlayerControls : MonoBehaviour
     private bool isSprinting = false;
     private float stamina; 
     private float timeSinceUsedStamina;
+    public int Health { get; set; }
 
     void Awake()
     {
@@ -50,6 +53,7 @@ public class PlayerControls : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         stamina = maxStamina;
         timeSinceUsedStamina = staminaRegenerationDelay;
+        Health = maxHealth;
     }
 
     void Update()
@@ -205,5 +209,14 @@ public class PlayerControls : MonoBehaviour
         {
             onGround = true;
         }
+    }
+
+    public void Damage(int damage)
+    {
+        Health-=damage;
+        if(Health <= 0)
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        };
     }
 }

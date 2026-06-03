@@ -105,13 +105,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Dinosaur
   visionRadius: 0
-  chargeAmount: 2
-  chargeUnits: 1
+  maxChargeDistance: 3
   chargeSpeed: 1
-  idlePath: []
-  loopIdlePath: 0
+  damage: 1
+  patrolRange: 5
+  patrolSpeed: 0.1
   player: {fileID: 0}
-  groundEpsilon: 0.01
-  references:
-    version: 2
-    RefIds: []
+  distanceEpsilon: 0.01
