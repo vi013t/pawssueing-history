@@ -6,12 +6,12 @@ public class GroundedEnemy : MonoBehaviour
 	[Header("Attacking")]
 	public float visionRadius = 5f;
 	public float maxChargeDistance = 3f;
-	public float chargeSpeed = 1f;
+	public float chargeSpeed = 20f;
 	public float damage = 1f;
 
 	[Header("Idle Patrol")]
 	public float patrolRange = 5f;
-	public float patrolSpeed = 0.1f;
+	public float patrolSpeed = 10f;
 	public HorizontalDirection? initialPatrolDirection = HorizontalDirection.Left;
 
 	[Header("Game Objects")]
@@ -23,14 +23,16 @@ public class GroundedEnemy : MonoBehaviour
 	public float distanceEpsilon = 0.01f;
 
 	private State state = State.Idle;
-	private Vector3 startingPosition;
+	private Vector2 startingPosition;
 	private HorizontalDirection patrollingDirection;
 	private bool onGround = false;
+	private Rigidbody2D rigidBody;
 
 	void Start()
 	{
-		startingPosition = transform.position;
 		patrollingDirection = initialPatrolDirection ?? HorizontalDirection.Left;
+		rigidBody = GetComponent<Rigidbody2D>();
+		startingPosition = rigidBody.position;
 	}
 
 	void Update()
@@ -38,41 +40,40 @@ public class GroundedEnemy : MonoBehaviour
 		if (state == State.Charging)
 		{
 			ContinueCharge(Time.deltaTime);
-			return;
 		}
 
-		if ((state == State.Idle || state == State.Returning) && CanSeePlayer)
+		else if ((state == State.Idle || state == State.Returning) && CanSeePlayer)
 		{
-			ChargeAtPlayer(Time.deltaTime);
-			return;
+			// ChargeAtPlayer(Time.deltaTime);
 		}
 
-		if (state == State.Idle)
+		else if (state == State.Returning && initialPatrolDirection != null && onGround)
 		{
-			if (initialPatrolDirection == null)
-			{
-				return;
-			}
+			Return(Time.deltaTime);
+		}
 
+		else if (state == State.Idle && initialPatrolDirection != null && onGround)
+		{
 			Patrol(Time.deltaTime);
-			return;
 		}
+
+		CheckForFall();
 	}
 
 	void CheckForFall()
 	{
-		if (onGround && (transform.position.y - startingPosition.y) < distanceEpsilon)
+		if (onGround && rigidBody.position.y - startingPosition.y > distanceEpsilon)
 		{
-			startingPosition = transform.position;
+			startingPosition = rigidBody.position;
 		}
 	}
 
 	void Return(float deltaTime)
 	{
-		var direction = Mathf.Sign((transform.position - startingPosition).x);
-		transform.position += new Vector3(direction * deltaTime, 0f, 0f);
+		var direction = Mathf.Sign((startingPosition - rigidBody.position).x);
+		rigidBody.MovePosition(rigidBody.position + new Vector2(direction * deltaTime, 0f));
 
-		if (transform.position.x - startingPosition.x <= distanceEpsilon)
+		if (Mathf.Abs(rigidBody.position.x - startingPosition.x) <= distanceEpsilon)
 		{
 			state = State.Idle;
 		}
@@ -80,13 +81,18 @@ public class GroundedEnemy : MonoBehaviour
 
 	void Patrol(float deltaTime)
 	{
-		transform.position += new Vector3(patrolSpeed * (int)patrollingDirection * deltaTime, 0f, 0f);
+		rigidBody.MovePosition(rigidBody.position + new Vector2(patrolSpeed * (int)patrollingDirection * deltaTime, 0f));
 
 		// switch directions
-		if (transform.position.x > startingPosition.x + patrolRange)
+		if (
+			(patrollingDirection == HorizontalDirection.Left && startingPosition.x - rigidBody.position.x >= patrolRange) ||
+			(patrollingDirection == HorizontalDirection.Right && rigidBody.position.x - startingPosition.x >= patrolRange)
+		)
 		{
 			patrollingDirection = (HorizontalDirection)((int)patrollingDirection * -1);
+			Debug.Log($"Switching to {patrollingDirection}");
 		}
+
 	}
 
 	void ChargeAtPlayer(float deltaTime)
@@ -97,8 +103,8 @@ public class GroundedEnemy : MonoBehaviour
 
 	void ContinueCharge(float deltaTime)
 	{
-		transform.position += new Vector3(chargeSpeed * (int)patrollingDirection * deltaTime, 0f, 0f);
-		if ((transform.position - startingPosition).magnitude > maxChargeDistance)
+		rigidBody.MovePosition(rigidBody.position + new Vector2(chargeSpeed * (int)patrollingDirection * deltaTime, 0f));
+		if ((rigidBody.position - startingPosition).magnitude > maxChargeDistance)
 		{
 			state = State.Returning;
 		}
@@ -107,15 +113,15 @@ public class GroundedEnemy : MonoBehaviour
 	bool CanSeePlayer
 	{
 		get {
-			Vector2 direction = patrollingDirection == HorizontalDirection.Left ? new(-1, 0) : new(1, 0);
-			float distance = (transform.position - player.transform.position).magnitude;
+			Vector2 direction = patrollingDirection == HorizontalDirection.Left ? Vector2.left : Vector2.right;
+			float distance = Vector2.Distance(transform.position, player.transform.position);
 
 			if (distance > visionRadius) return false;
 
-			direction.Normalize();
-			if (Physics.Raycast(transform.position, direction, out RaycastHit hit, visionRadius))
+			RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, visionRadius);
+			if (hit.collider != null)
 			{
-				return hit.transform == player;
+				return hit.transform == player.transform;
 			}
 
 			return false;
@@ -138,6 +144,7 @@ public class GroundedEnemy : MonoBehaviour
 	}
 }
 
+[System.Serializable]
 public enum HorizontalDirection
 {
 	Left = -1,
