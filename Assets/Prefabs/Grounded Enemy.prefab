@@ -106,12 +106,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9b2234f49086304e8964efa80a5441c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Dinosaur
-  visionRadius: 3
+  visionRadius: 5
   maxChargeDistance: 3
-  chargeSpeed: 20
+  chargeSpeed: 15
   damage: 1
   patrolRange: 5
-  patrolSpeed: 10
+  patrolSpeed: 5
   player: {fileID: 0}
   distanceEpsilon: 0.01
 --- !u!50 &1059867242940668172

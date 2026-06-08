@@ -35,26 +35,27 @@ public class GroundedEnemy : MonoBehaviour
 		startingPosition = rigidBody.position;
 	}
 
-	void Update()
+	void FixedUpdate()
 	{
+		Debug.Log(CanSeePlayer);
 		if (state == State.Charging)
 		{
-			ContinueCharge(Time.deltaTime);
+			ContinueCharge(Time.fixedDeltaTime);
 		}
 
 		else if ((state == State.Idle || state == State.Returning) && CanSeePlayer)
 		{
-			// ChargeAtPlayer(Time.deltaTime);
+			ChargeAtPlayer(Time.fixedDeltaTime);
 		}
 
 		else if (state == State.Returning && initialPatrolDirection != null && onGround)
 		{
-			Return(Time.deltaTime);
+			Return(Time.fixedDeltaTime);
 		}
 
 		else if (state == State.Idle && initialPatrolDirection != null && onGround)
 		{
-			Patrol(Time.deltaTime);
+			Patrol(Time.fixedDeltaTime);
 		}
 
 		CheckForFall();
@@ -115,6 +116,7 @@ public class GroundedEnemy : MonoBehaviour
 		get {
 			Vector2 direction = patrollingDirection == HorizontalDirection.Left ? Vector2.left : Vector2.right;
 			float distance = Vector2.Distance(transform.position, player.transform.position);
+			Debug.DrawRay(transform.position, direction * visionRadius, Color.red);
 
 			if (distance > visionRadius) return false;
 
