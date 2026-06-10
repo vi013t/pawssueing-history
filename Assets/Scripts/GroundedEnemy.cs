@@ -7,7 +7,7 @@ public class GroundedEnemy : MonoBehaviour
 	public float visionRadius = 5f;
 	public float maxChargeDistance = 3f;
 	public float chargeSpeed = 20f;
-	public float damage = 1f;
+	public int damage = 1;
 
 	[Header("Idle Patrol")]
 	public float patrolRange = 5f;
@@ -116,6 +116,9 @@ public class GroundedEnemy : MonoBehaviour
 		get {
 			Vector2 direction = patrollingDirection == HorizontalDirection.Left ? Vector2.left : Vector2.right;
 			float distance = Vector2.Distance(transform.position, player.transform.position);
+			Debug.Log(direction * visionRadius);
+
+			// WHY WONT YOU SHOW
 			Debug.DrawRay(transform.position, direction * visionRadius, Color.red);
 
 			if (distance > visionRadius) return false;
@@ -136,6 +139,13 @@ public class GroundedEnemy : MonoBehaviour
         {
             onGround = true;
         }
+
+		var player = collision.gameObject.GetComponent<PlayerControls>();
+		if (player)
+		{
+			player.Damage(damage);
+			Debug.Log(player.Health);
+		}
     }
 
 	public enum State
