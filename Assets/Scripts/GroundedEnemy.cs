@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using Unity.Mathematics;
 
 public class GroundedEnemy : MonoBehaviour
 {
@@ -116,16 +117,20 @@ public class GroundedEnemy : MonoBehaviour
 		get {
 			Vector2 direction = patrollingDirection == HorizontalDirection.Left ? Vector2.left : Vector2.right;
 			float distance = Vector2.Distance(transform.position, player.transform.position);
+			Debug.Log(distance);
 			Debug.Log(direction * visionRadius);
 
 			// WHY WONT YOU SHOW
 			Debug.DrawRay(transform.position, direction * visionRadius, Color.red);
-
-			if (distance > visionRadius) return false;
+			if (distance > visionRadius)
+			{ 
+				return false;
+			}
 
 			RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, visionRadius);
 			if (hit.collider != null)
 			{
+				Debug.Log($"{hit.transform} == {player.transform}");
 				return hit.transform == player.transform;
 			}
 

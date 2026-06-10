@@ -205,7 +205,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4976869475895809887, guid: c02ff276ae52fd946b6ff3a01d3ad283, type: 3}
       propertyPath: m_Tiles.Array.size
-      value: 1212
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4976869475895809887, guid: c02ff276ae52fd946b6ff3a01d3ad283, type: 3}
       propertyPath: m_Tiles.Array.data[0].first.x
@@ -9953,15 +9953,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4976869475895809887, guid: c02ff276ae52fd946b6ff3a01d3ad283, type: 3}
       propertyPath: m_TileAssetArray.Array.data[0].m_RefCount
-      value: 997
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4976869475895809887, guid: c02ff276ae52fd946b6ff3a01d3ad283, type: 3}
       propertyPath: m_TileAssetArray.Array.data[1].m_RefCount
-      value: 215
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4976869475895809887, guid: c02ff276ae52fd946b6ff3a01d3ad283, type: 3}
       propertyPath: m_TileColorArray.Array.data[0].m_RefCount
-      value: 1212
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4976869475895809887, guid: c02ff276ae52fd946b6ff3a01d3ad283, type: 3}
       propertyPath: m_Tiles.Array.data[10].second.m_TileIndex
@@ -10325,15 +10325,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4976869475895809887, guid: c02ff276ae52fd946b6ff3a01d3ad283, type: 3}
       propertyPath: m_TileMatrixArray.Array.data[0].m_RefCount
-      value: 1212
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4976869475895809887, guid: c02ff276ae52fd946b6ff3a01d3ad283, type: 3}
       propertyPath: m_TileSpriteArray.Array.data[0].m_RefCount
-      value: 997
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4976869475895809887, guid: c02ff276ae52fd946b6ff3a01d3ad283, type: 3}
       propertyPath: m_TileSpriteArray.Array.data[1].m_RefCount
-      value: 215
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4976869475895809887, guid: c02ff276ae52fd946b6ff3a01d3ad283, type: 3}
       propertyPath: m_Tiles.Array.data[100].second.m_TileIndex
@@ -24731,6 +24731,10 @@ PrefabInstance:
       propertyPath: gameCamera
       value: 
       objectReference: {fileID: 455492797}
+    - target: {fileID: 6647336972246311605, guid: c02ff276ae52fd946b6ff3a01d3ad283, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6913545482075567523, guid: c02ff276ae52fd946b6ff3a01d3ad283, type: 3}
       propertyPath: gameCamera
       value: 
@@ -24933,6 +24937,18 @@ PrefabInstance:
       propertyPath: player
       value: 
       objectReference: {fileID: 255035608}
+    - target: {fileID: 4878144827341322385, guid: 993d7ebf403a6bd41a4acd29507cc19b, type: 3}
+      propertyPath: chargeSpeed
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 4878144827341322385, guid: 993d7ebf403a6bd41a4acd29507cc19b, type: 3}
+      propertyPath: visionRadius
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 4878144827341322385, guid: 993d7ebf403a6bd41a4acd29507cc19b, type: 3}
+      propertyPath: maxChargeDistance
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 5319633413927657888, guid: 993d7ebf403a6bd41a4acd29507cc19b, type: 3}
       propertyPath: m_Name
       value: Grounded Enemy
