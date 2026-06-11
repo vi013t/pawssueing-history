@@ -17583,7 +17583,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 399, y: -36}
+  m_AnchoredPosition: {x: 157, y: -70}
   m_SizeDelta: {x: 183.04, y: 55.88}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1027364507
@@ -17875,7 +17875,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 399, y: 43.18}
+  m_AnchoredPosition: {x: 151, y: 8}
   m_SizeDelta: {x: 183.04, y: 65.56}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1223561960
@@ -17893,7 +17893,7 @@ MonoBehaviour:
   normalSprite: {fileID: -543123333966261490, guid: 7c9b88a65898a84408a3a932c9345ef4, type: 3}
   hoverSprite: {fileID: -543123333966261490, guid: 7c9b88a65898a84408a3a932c9345ef4, type: 3}
   isStartButton: 1
-  sceneName: 'Prehistory - 1 '
+  sceneName: Prehistory - 1
 --- !u!114 &1223561961
 MonoBehaviour:
   m_ObjectHideFlags: 0
