@@ -35,7 +35,7 @@ public class PlayerControls : MonoBehaviour, Damageable
     private Rigidbody2D rigidBody;
 
     private Queue<Vector2> recordedPositions = new();
-    private float recordingTime = 0f;
+    public float recordingTime = 0f;
     private Vector2 recordingPosition;
 
     private bool onGround;
