@@ -5,6 +5,7 @@ using UnityEngine;
 public class OutOfBoundsScript : MonoBehaviour
 {
     public Vector2 spawnPosition;
+    public int damage = 1;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -25,7 +26,7 @@ public class OutOfBoundsScript : MonoBehaviour
         }
         if (collision.TryGetComponent(out Damageable hit))
         {
-            hit.Damage(1);
+            hit.Damage(damage);
         }
     }
 }

@@ -217,4 +217,5 @@ MonoBehaviour:
   cameraFollowSpeed: 5
   cameraOffset: 0
   clonePrefab: {fileID: 1312916363753097493, guid: 1b790e8448ec33a408792649040ea1af, type: 3}
-  recordTime: 5
+  recordTime: 3
+  stamina: 0

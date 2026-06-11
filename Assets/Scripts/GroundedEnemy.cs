@@ -13,6 +13,7 @@ public class GroundedEnemy : MonoBehaviour
 	[Header("Idle Patrol")]
 	public float patrolRange = 5f;
 	public float patrolSpeed = 10f;
+	public bool flying = false;
 	public HorizontalDirection? initialPatrolDirection = HorizontalDirection.Left;
 
 	[Header("Game Objects")]
@@ -51,17 +52,16 @@ public class GroundedEnemy : MonoBehaviour
 			ChargeAtPlayer(Time.fixedDeltaTime);
 		}
 
-		else if (state == State.Returning && initialPatrolDirection != null && onGround)
+		else if (state == State.Returning && initialPatrolDirection != null && (onGround || flying))
 		{
 			Return(Time.fixedDeltaTime);
 		}
 
-		else if (state == State.Idle && initialPatrolDirection != null && onGround)
+		else if (state == State.Idle && initialPatrolDirection != null && (onGround || flying))
 		{
 			Patrol(Time.fixedDeltaTime);
 		}
-
-		CheckForFall();
+		if(!flying) CheckForFall();
 	}
 
 	void CheckForFall()
@@ -147,7 +147,7 @@ public class GroundedEnemy : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.CompareTag("Ground") || collision.gameObject.CompareTag("Clone"))
+        if (collision.gameObject.CompareTag("Ground"))
         {
             onGround = true;
         }
