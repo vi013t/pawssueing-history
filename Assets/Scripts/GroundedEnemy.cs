@@ -130,7 +130,7 @@ public class GroundedEnemy : MonoBehaviour
 		}
 
 		var start = new Vector3(transform.position.x + (int) patrollingDirection * (this.GetComponent<BoxCollider2D>().size.x / 2f + 0.5f), transform.position.y, transform.position.z);
-		//Debug.DrawRay(start, direction * visionRadius, Color.red);
+		Debug.DrawRay(start, direction * visionRadius, Color.red);
 
 		RaycastHit2D hit = Physics2D.Raycast(start, direction, visionRadius);
 		if (hit.collider == null) return null;
