@@ -31,6 +31,9 @@ public class GroundedEnemy : MonoBehaviour
 	private Rigidbody2D rigidBody;
 	private (Damageable, GameObject)? chargeAt = null;
 
+	private Animator animator;
+    private SpriteRenderer spriteRenderer;
+
 	void Start()
 	{
 		patrollingDirection = initialPatrolDirection ?? HorizontalDirection.Left;
@@ -40,6 +43,7 @@ public class GroundedEnemy : MonoBehaviour
 
 	void FixedUpdate()
 	{
+
 		chargeAt = FindTarget();
 
 		if (state == State.Charging)
@@ -62,6 +66,7 @@ public class GroundedEnemy : MonoBehaviour
 			Patrol(Time.fixedDeltaTime);
 		}
 		if(!flying) CheckForFall();
+
 	}
 
 	void CheckForFall()
