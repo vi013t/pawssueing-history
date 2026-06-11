@@ -40,7 +40,7 @@ public class PlayerControls : MonoBehaviour, Damageable
 
     private bool onGround;
     private bool isSprinting = false;
-    private float stamina; 
+    public float stamina; 
     private float timeSinceUsedStamina;
     public int Health { get; set; }
 
