@@ -5,6 +5,7 @@ public class Clone : MonoBehaviour, Damageable
 {
     public Queue<Vector2> movements = new();
     private Rigidbody2D rigidBody;
+    public static HashSet<Clone> clones = new();
 
     public int Health { get; set; }
 
@@ -12,6 +13,7 @@ public class Clone : MonoBehaviour, Damageable
     {
         rigidBody = GetComponent<Rigidbody2D>();
         Health = 1;
+        clones.Add(this);
     }
 
     void FixedUpdate()
@@ -22,6 +24,7 @@ public class Clone : MonoBehaviour, Damageable
         } else
         {
             Destroy(gameObject);
+            clones.Remove(this);
         }
     }
 

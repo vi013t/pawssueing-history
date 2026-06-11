@@ -28,6 +28,7 @@ public class GroundedEnemy : MonoBehaviour
 	private HorizontalDirection patrollingDirection;
 	private bool onGround = false;
 	private Rigidbody2D rigidBody;
+	private (Damageable, GameObject)? chargeAt = null;
 
 	void Start()
 	{
@@ -38,13 +39,14 @@ public class GroundedEnemy : MonoBehaviour
 
 	void FixedUpdate()
 	{
-		Debug.Log(CanSeePlayer);
+		chargeAt = FindTarget();
+
 		if (state == State.Charging)
 		{
 			ContinueCharge(Time.fixedDeltaTime);
 		}
 
-		else if ((state == State.Idle || state == State.Returning) && CanSeePlayer)
+		else if ((state == State.Idle || state == State.Returning) && chargeAt != null)
 		{
 			ChargeAtPlayer(Time.fixedDeltaTime);
 		}
@@ -73,6 +75,7 @@ public class GroundedEnemy : MonoBehaviour
 	void Return(float deltaTime)
 	{
 		var direction = Mathf.Sign((startingPosition - rigidBody.position).x);
+		patrollingDirection = (HorizontalDirection) direction;
 		rigidBody.MovePosition(rigidBody.position + new Vector2(direction * deltaTime, 0f));
 
 		if (Mathf.Abs(rigidBody.position.x - startingPosition.x) <= distanceEpsilon)
@@ -92,7 +95,6 @@ public class GroundedEnemy : MonoBehaviour
 		)
 		{
 			patrollingDirection = (HorizontalDirection)((int)patrollingDirection * -1);
-			Debug.Log($"Switching to {patrollingDirection}");
 		}
 
 	}
@@ -105,37 +107,42 @@ public class GroundedEnemy : MonoBehaviour
 
 	void ContinueCharge(float deltaTime)
 	{
-		rigidBody.MovePosition(rigidBody.position + new Vector2(chargeSpeed * (int)patrollingDirection * deltaTime, 0f));
+		if (chargeAt == null) return;
+		var direction = Mathf.Sign(chargeAt.Value.Item2.transform.position.x - rigidBody.position.x);
+		rigidBody.MovePosition(rigidBody.position + new Vector2(chargeSpeed * direction * deltaTime, 0f));
 		if ((rigidBody.position - startingPosition).magnitude > maxChargeDistance)
 		{
 			state = State.Returning;
 		}
 	}
 
-	bool CanSeePlayer
-	{
-		get {
-			Vector2 direction = patrollingDirection == HorizontalDirection.Left ? Vector2.left : Vector2.right;
-			float distance = Vector2.Distance(transform.position, player.transform.position);
-			Debug.Log(distance);
-			Debug.Log(direction * visionRadius);
-
-			// WHY WONT YOU SHOW
-			Debug.DrawRay(transform.position, direction * visionRadius, Color.red);
-			if (distance > visionRadius)
-			{ 
-				return false;
-			}
-
-			RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, visionRadius);
-			if (hit.collider != null)
-			{
-				Debug.Log($"{hit.transform} == {player.transform}");
-				return hit.transform == player.transform;
-			}
-
-			return false;
+	(Damageable, GameObject)? FindTarget() {
+		Vector2 direction = patrollingDirection == HorizontalDirection.Left ? Vector2.left : Vector2.right;
+		float distance = Vector2.Distance(transform.position, player.transform.position);
+		if (distance > visionRadius)
+		{ 
+			return null;
 		}
+
+		var start = new Vector3(transform.position.x + (int) patrollingDirection * (this.GetComponent<BoxCollider2D>().size.x / 2f + 0.5f), transform.position.y, transform.position.z);
+		//Debug.DrawRay(start, direction * visionRadius, Color.red);
+
+		RaycastHit2D hit = Physics2D.Raycast(start, direction, visionRadius);
+		if (hit.collider == null) return null;
+
+		if (hit.transform == player.transform)
+		{
+			return (player, player.gameObject);
+		}
+
+		foreach (var clone in Clone.clones) {
+			if (hit.transform == clone.transform)
+			{
+				return (clone, clone.gameObject);
+			}
+		}
+
+		return null;
 	}
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -145,11 +152,10 @@ public class GroundedEnemy : MonoBehaviour
             onGround = true;
         }
 
-		var player = collision.gameObject.GetComponent<PlayerControls>();
-		if (player)
+		Damageable player = ((Damageable) collision.gameObject.GetComponent<PlayerControls>()) ?? ((Damageable) collision.gameObject.GetComponent<Clone>());
+		if (player != null)
 		{
 			player.Damage(damage);
-			Debug.Log(player.Health);
 		}
     }
 
