@@ -934,42 +934,6 @@ PrefabInstance:
       propertyPath: m_GravityScale
       value: 3
       objectReference: {fileID: 0}
-    - target: {fileID: 1740207217241288315, guid: 993d7ebf403a6bd41a4acd29507cc19b, type: 3}
-      propertyPath: m_FlipX
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1740207217241288315, guid: 993d7ebf403a6bd41a4acd29507cc19b, type: 3}
-      propertyPath: m_FlipY
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1740207217241288315, guid: 993d7ebf403a6bd41a4acd29507cc19b, type: 3}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: 2072640275240368233, guid: 0714bf9c7eb065a4ca8b438f6db8da34, type: 3}
-    - target: {fileID: 1740207217241288315, guid: 993d7ebf403a6bd41a4acd29507cc19b, type: 3}
-      propertyPath: m_Color.b
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1740207217241288315, guid: 993d7ebf403a6bd41a4acd29507cc19b, type: 3}
-      propertyPath: m_Color.g
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1740207217241288315, guid: 993d7ebf403a6bd41a4acd29507cc19b, type: 3}
-      propertyPath: m_Color.r
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1740207217241288315, guid: 993d7ebf403a6bd41a4acd29507cc19b, type: 3}
-      propertyPath: m_DrawMode
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1740207217241288315, guid: 993d7ebf403a6bd41a4acd29507cc19b, type: 3}
-      propertyPath: m_MaskInteraction
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1740207217241288315, guid: 993d7ebf403a6bd41a4acd29507cc19b, type: 3}
-      propertyPath: 'm_Materials.Array.data[0]'
-      value: 
-      objectReference: {fileID: 2100000, guid: 9dfc825aed78fcd4ba02077103263b40, type: 2}
     - target: {fileID: 4878144827341322385, guid: 993d7ebf403a6bd41a4acd29507cc19b, type: 3}
       propertyPath: player
       value: 

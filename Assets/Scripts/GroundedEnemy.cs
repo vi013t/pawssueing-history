@@ -141,8 +141,7 @@ public class GroundedEnemy : MonoBehaviour
 		}
 
 		foreach (var clone in Clone.clones) {
-			if (hit.transform == clone.transform)
-			{
+			if (clone != null && hit.transform == clone.transform){
 				return (clone, clone.gameObject);
 			}
 		}
